@@ -9,6 +9,11 @@ using namespace std;
 
 int Aninhamento (string arquivo, structures::ArrayStack<string>* pilha) {
   string line;
+  string altura;
+  string largura;
+  int matriz = 1;
+
+
   string file = arquivo;
   ifstream myfile (file);
   if (myfile.is_open())
@@ -26,6 +31,42 @@ int Aninhamento (string arquivo, structures::ArrayStack<string>* pilha) {
                 }
                 palavra.push_back(line[j]);
                 pilha->push(palavra);
+
+              
+//Coletando tags de dimensao da matriz ----------------------------
+              
+            if (palavra == "<altura>"){
+                  cout << matriz << endl;
+                  
+              
+                  int k = j+1;
+                  while (line[k] != '<'){
+                    altura.push_back(line[k]);
+                    ++k;
+                    
+                  }
+                  cout << altura << '\n';
+                  altura = " ";
+                }
+              
+                
+            if (palavra == "<largura>"){
+              matriz++;
+              int k = j+1;
+              while (line[k] != '<'){
+                largura.push_back(line[k]);
+                k++;
+              }
+              cout << largura << '\n';
+              largura = " ";
+            }
+              
+//----------------------------------------------------------------------
+
+
+
+
+              
             } else {
                 while (line[j] != '>') {
                     if (line[j] != '/') {
@@ -34,6 +75,12 @@ int Aninhamento (string arquivo, structures::ArrayStack<string>* pilha) {
                     j++;
                 }
                 palavra.push_back(line[j]);
+                    //cout << line[j+8] << endl;
+              
+                
+                
+
+              
                 if (!pilha->empty()) {
                 string temp = pilha->pop();
                 if (temp != palavra) {
@@ -64,6 +111,7 @@ int Aninhamento (string arquivo, structures::ArrayStack<string>* pilha) {
 
   cout << file;
   printf(": Aninhamento Correto\n");
+  
   return 0;
 }
 
@@ -85,5 +133,3 @@ int main () {
 
     return 0;
 }
-
-// eu so maluco to doidao
