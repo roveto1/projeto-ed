@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -12,6 +13,12 @@ int Aninhamento (string arquivo, structures::ArrayStack<string>* pilha) {
   string altura;
   string largura;
   int matriz = 1;
+
+  
+  //Matriz que armazena todas as dimensoes
+  vector<vector<string>> dimensoes;
+  //Vetor que armazena apenas as dimensoes do cenario atual
+  vector<string> dimensao_local;
 
 
   string file = arquivo;
@@ -36,8 +43,6 @@ int Aninhamento (string arquivo, structures::ArrayStack<string>* pilha) {
 //Coletando tags de dimensao da matriz ----------------------------
               
             if (palavra == "<altura>"){
-                  cout << matriz << endl;
-                  
               
                   int k = j+1;
                   while (line[k] != '<'){
@@ -45,7 +50,9 @@ int Aninhamento (string arquivo, structures::ArrayStack<string>* pilha) {
                     ++k;
                     
                   }
-                  cout << altura << '\n';
+                  //Guarda a altura no vetor de dimensao local
+                  dimensao_local.push_back(altura);
+              
                   altura = " ";
                 }
               
@@ -57,12 +64,21 @@ int Aninhamento (string arquivo, structures::ArrayStack<string>* pilha) {
                 largura.push_back(line[k]);
                 k++;
               }
-              cout << largura << '\n';
+
+              //Guarda a largura no vetor de dimensao local
+              dimensao_local.push_back(largura);
+
+              //Guarda as dimensoes do cenario atual na Matriz Geral
+              dimensoes.push_back(dimensao_local);
+
+              //Esvazia o vetor de dimensoes do cenario atual
+              dimensao_local.clear();
+              
               largura = " ";
+              
             }
               
 //----------------------------------------------------------------------
-
 
 
 
@@ -75,10 +91,7 @@ int Aninhamento (string arquivo, structures::ArrayStack<string>* pilha) {
                     j++;
                 }
                 palavra.push_back(line[j]);
-                    //cout << line[j+8] << endl;
               
-                
-                
 
               
                 if (!pilha->empty()) {
@@ -111,6 +124,19 @@ int Aninhamento (string arquivo, structures::ArrayStack<string>* pilha) {
 
   cout << file;
   printf(": Aninhamento Correto\n");
+
+
+  
+//----Printando as dimensoes------------------------------
+  for (int i = 0; i < matriz-1; i++){
+    for (int j = 0; j < 2; j++){
+      cout << dimensoes[i][j] << endl;
+    }
+    cout << "\n";
+  }
+//---------------------------------------------------------
+
+
   
   return 0;
 }
