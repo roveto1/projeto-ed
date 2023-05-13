@@ -8,17 +8,28 @@
 
 using namespace std;
 
-int Aninhamento (string arquivo, structures::ArrayStack<string>* pilha) {
+typedef struct matrizOriginal {
+  int linha;
+  int coluna;
+  vector<vector<char>> matriz;
+} matrizOriginal;
+
+vector<matrizOriginal*> Aninhamento (string arquivo, structures::ArrayStack<string>* pilha) {
   string line;
   string altura;
   string largura;
   int matriz = 1;
+  int leituraMatriz = 0;
+  int linhaMatriz = 0;
+  vector<vector<char>> matrizLocal;
 
   
   //Matriz que armazena todas as dimensoes
   vector<vector<int>> dimensoes;
   //Vetor que armazena apenas as dimensoes do cenario atual
   vector<int> dimensao_local;
+
+  vector<matrizOriginal*> vetor_matriz;
 
 
   string file = arquivo;
@@ -43,6 +54,8 @@ int Aninhamento (string arquivo, structures::ArrayStack<string>* pilha) {
 //Coletando tags de dimensao da matriz ----------------------------
               
             if (palavra == "<altura>"){
+                //Esvazia o vetor de dimensoes do cenario atual
+                dimensao_local.clear();
               
                   int k = j+1;
                   while (line[k] != '<'){
@@ -77,14 +90,19 @@ int Aninhamento (string arquivo, structures::ArrayStack<string>* pilha) {
               //Guarda as dimensoes do cenario atual na Matriz Geral
               dimensoes.push_back(dimensao_local);
 
-              //Esvazia o vetor de dimensoes do cenario atual
-              dimensao_local.clear();
+
               
               largura = " ";
               
             }
               
 //----------------------------------------------------------------------
+            if (palavra == "<matriz>"){
+              if (linhaMatriz == 0) {
+                leituraMatriz = 1;
+              }
+              break;
+            }
 
 
 
@@ -104,28 +122,49 @@ int Aninhamento (string arquivo, structures::ArrayStack<string>* pilha) {
                 string temp = pilha->pop();
                 if (temp != palavra) {
                     cout << file;
-                    printf(": Erro de aninhamento\n");
-                    return 0;
+                    throw std::logic_error(": Erro de aninhamento");
                 }
                 } else {
                     cout << file;
-                    printf(": Erro de aninhamento\n");
-                    return 0;
+                    throw std::logic_error(": Erro de aninhamento");
                 }
             
       }
+    } else if (leituraMatriz) {
+      vector<char> temp;
+      for (int j = 0; j < line.length(); j++) {
+        temp.push_back(line[j]);
+      }
+
+      matrizLocal.push_back(temp);
+
+      linhaMatriz++;
+      int coluna = dimensao_local[1];
+      int linha = dimensao_local[0];
+      if (linhaMatriz == linha) {
+        matrizOriginal* matrizRetorno = new matrizOriginal;
+        matrizRetorno->linha = linha;
+        matrizRetorno->coluna = coluna;
+        matrizRetorno->matriz = matrizLocal;
+
+        vetor_matriz.push_back(matrizRetorno);
+        leituraMatriz = 0;
+        linhaMatriz = 0;
+        matrizLocal.clear();
+        cout << endl;
+        break;
+      } 
+      break; // esse break é um deus; não perturbar!!!
     }
       }
     }
     myfile.close();
     if (!pilha->empty()) {
         cout << file;
-        printf(": Erro de aninhamento\n");
-        return 0;
+        throw std::logic_error(": Erro de aninhamento");
     }
   } else {
-    cout << "Erro para abrir o arquivo" << endl;
-    return 0;
+    throw std::logic_error(": Erro para ler o arquivo");
   } 
 
   cout << file;
@@ -141,10 +180,7 @@ int Aninhamento (string arquivo, structures::ArrayStack<string>* pilha) {
     cout << "\n";
   }
 //---------------------------------------------------------
-
-
-  
-  return 0;
+  return vetor_matriz;
 }
 
 
@@ -155,7 +191,23 @@ int main () {
 
     std::cin >> xmlfilename;  // entrada
     string xmlString = xmlfilename;
-    Aninhamento(xmlString, &pilha);
+    vector<matrizOriginal*> matrizVec = Aninhamento(xmlString, &pilha);
+
+    for (int k = 0; k < matrizVec.size(); k++){
+      vector<vector<char>> matriz = matrizVec[k]->matriz;
+      int linha = matrizVec[k]->linha;
+      int coluna = matrizVec[k]->coluna;
+      
+      for (int i = 0; i < linha; i++){
+        for (int j = 0; j < coluna; j++){
+          cout << matriz[i][j];
+        }
+        cout<<endl;
+      }
+      
+     }
+
+
     
     /*
      
