@@ -1,4 +1,4 @@
-// reading a text file
+// reading a text file - gcc -o teste teste.cpp -lstdc++
 #include "array_stack.h"
 
 #include <iostream>
