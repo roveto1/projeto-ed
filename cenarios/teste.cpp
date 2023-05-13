@@ -16,9 +16,9 @@ int Aninhamento (string arquivo, structures::ArrayStack<string>* pilha) {
 
   
   //Matriz que armazena todas as dimensoes
-  vector<vector<string>> dimensoes;
+  vector<vector<int>> dimensoes;
   //Vetor que armazena apenas as dimensoes do cenario atual
-  vector<string> dimensao_local;
+  vector<int> dimensao_local;
 
 
   string file = arquivo;
@@ -50,8 +50,12 @@ int Aninhamento (string arquivo, structures::ArrayStack<string>* pilha) {
                     ++k;
                     
                   }
+
+                  //Converte a string para inetiro
+                  int int_altura = stoi(altura);
+
                   //Guarda a altura no vetor de dimensao local
-                  dimensao_local.push_back(altura);
+                  dimensao_local.push_back(int_altura);
               
                   altura = " ";
                 }
@@ -64,9 +68,11 @@ int Aninhamento (string arquivo, structures::ArrayStack<string>* pilha) {
                 largura.push_back(line[k]);
                 k++;
               }
+              //Converte a string para inteiro
+              int int_largura = stoi(largura);
 
               //Guarda a largura no vetor de dimensao local
-              dimensao_local.push_back(largura);
+              dimensao_local.push_back(int_largura);
 
               //Guarda as dimensoes do cenario atual na Matriz Geral
               dimensoes.push_back(dimensao_local);
