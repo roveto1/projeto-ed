@@ -22,6 +22,8 @@ vector<matrizOriginal*> Aninhamento (string arquivo, structures::ArrayStack<stri
   int leituraMatriz = 0;
   int linhaMatriz = 0;
   vector<vector<char>> matrizLocal;
+  string erro1 = ": Erro de aninhamento";
+  string erro2 = ": Arquivo nao encontrado";
 
   
   //Matriz que armazena todas as dimensoes
@@ -64,14 +66,17 @@ vector<matrizOriginal*> Aninhamento (string arquivo, structures::ArrayStack<stri
                     
                   }
 
+                  if (altura.length() > 0) {
+
                   //Converte a string para inetiro
                   int int_altura = stoi(altura);
 
                   //Guarda a altura no vetor de dimensao local
                   dimensao_local.push_back(int_altura);
               
-                  altura = " ";
+                  altura.clear();
                 }
+            }
               
                 
             if (palavra == "<largura>"){
@@ -81,6 +86,9 @@ vector<matrizOriginal*> Aninhamento (string arquivo, structures::ArrayStack<stri
                 largura.push_back(line[k]);
                 k++;
               }
+
+              if (largura.length() > 0) {
+
               //Converte a string para inteiro
               int int_largura = stoi(largura);
 
@@ -89,10 +97,11 @@ vector<matrizOriginal*> Aninhamento (string arquivo, structures::ArrayStack<stri
 
               //Guarda as dimensoes do cenario atual na Matriz Geral
               dimensoes.push_back(dimensao_local);
-
-
               
-              largura = " ";
+              largura.clear();
+
+              }
+
               
             }
               
@@ -122,11 +131,11 @@ vector<matrizOriginal*> Aninhamento (string arquivo, structures::ArrayStack<stri
                 string temp = pilha->pop();
                 if (temp != palavra) {
                     cout << file;
-                    throw std::logic_error(": Erro de aninhamento");
+                    throw std::logic_error(file + erro1);
                 }
                 } else {
                     cout << file;
-                    throw std::logic_error(": Erro de aninhamento");
+                    throw std::logic_error(file + erro1);
                 }
             
       }
@@ -161,10 +170,10 @@ vector<matrizOriginal*> Aninhamento (string arquivo, structures::ArrayStack<stri
     myfile.close();
     if (!pilha->empty()) {
         cout << file;
-        throw std::logic_error(": Erro de aninhamento");
+        throw std::logic_error( file + erro1);
     }
   } else {
-    throw std::logic_error(": Erro para ler o arquivo");
+    throw std::logic_error(file + erro2);
   } 
 
   cout << file;
@@ -193,16 +202,17 @@ int main () {
     string xmlString = xmlfilename;
     vector<matrizOriginal*> matrizVec = Aninhamento(xmlString, &pilha);
 
-    for (int k = 0; k < matrizVec.size(); k++){
+    for (int k = 0; k < matrizVec.size(); k++) {
       vector<vector<char>> matriz = matrizVec[k]->matriz;
       int linha = matrizVec[k]->linha;
       int coluna = matrizVec[k]->coluna;
       
+      cout << '\n';
       for (int i = 0; i < linha; i++){
         for (int j = 0; j < coluna; j++){
           cout << matriz[i][j];
         }
-        cout<<endl;
+        cout << endl;
       }
       
      }
