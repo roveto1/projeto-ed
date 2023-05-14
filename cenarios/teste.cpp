@@ -1,4 +1,4 @@
-// reading a text file - gcc -o teste teste.cpp -lstdc++
+// Copyright [2023] <Roberto Vandresen Neto // Mateus Goulart Chedid>
 #include "array_stack.h"
 #include "array_queue.h"
 
